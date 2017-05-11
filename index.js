@@ -26,6 +26,17 @@ app.post('/api/user', function(req, res){
     });
 })
 
+app.post('/api/comment', function(req, res){
+    db.addComment(req.body, function(){
+        res.send();
+    });
+});
+
+app.get('/api/comments', function(req, res){
+   db.getComments(function(err, result){
+        res.send(result); 
+   }); 
+});
 
 
 app.listen(3000, function () {

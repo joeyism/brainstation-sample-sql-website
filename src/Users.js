@@ -2,9 +2,12 @@ import React, { Component } from 'react';
 import 'whatwg-fetch';
 import ShowUsers from './components/showUsers';
 import AddUsers from './components/addUsers';
+import ShowComments from './components/showComments';
+import AddComments from './components/addComments';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as userActions from './actions/users';
+import * as addComments from './actions/addComments';
 import StoreInstance from './store';
 
 
@@ -12,7 +15,9 @@ class Users extends Component {
     constructor(props){
         super(props);
         this.state= {
-            loading: true
+            loading: true,
+            currentuser: {},
+            comments: []
         };
 
         var that = this;
@@ -22,18 +27,28 @@ class Users extends Component {
             users.forEach(function(user){
                 StoreInstance.dispatch(userActions.addUser(user));
             });
-            that.setState( (prev) => {
+
+            return fetch("/api/comments");
+        }).then(function(response){
+            return response.json();
+        }).then(function(comments){
+            that.setState((prev) => {
                 return {
                     users: prev.users,
-                    loading: false
+                    loading: false,
+                    currentuser: prev.currentuser,
+                    comments: comments
                 }
             });
+
         });
 
         StoreInstance.subscribe(() => {
             this.setState((prev)=> ({
                 users: StoreInstance.getState().users,
-                loading: prev.loading
+                loading: prev.loading,
+                currentuser: StoreInstance.getState().currentuser.currentuser,
+                comments: StoreInstance.getState().comments.comments
             }));
         });
     }
@@ -45,8 +60,11 @@ class Users extends Component {
 
         return (
             <div className="user-container">
-            < ShowUsers users = {this.state.users}/>
+            < ShowUsers users = {this.state.users} currentuser = {this.state.currentuser} />
             < AddUsers users = {this.state.users}/>
+            < ShowComments comments = {this.state.comments}/>
+            < AddComments currentuser = { this.state.currentuser} comments = {this.state.comments}/>
+
             </div> 
         );
     }

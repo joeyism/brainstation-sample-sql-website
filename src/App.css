@@ -1,3 +1,8 @@
+body{
+    font-family: arial;
+    background-color: #afd7ff;
+}
+
 .App {
     text-align: center;
 }
@@ -29,9 +34,11 @@
 
 .add-yourself-div{
     margin: 50px;
-    border: 1px solid grey;
+    border: 2px solid black;
     padding: 20px;
     border-radius: 15px;
+    background-color:#2c3e50;
+    color:white;
 }
 
 .add-yourself-text{
@@ -44,4 +51,30 @@
 
 .user-container{
     margin-top: 20px;
+}
+
+.eachUser{
+    cursor: pointer;
+}
+
+.currentuser{
+    background-color: #c2baff;
+}
+
+.user-list{
+    list-style-type: none;
+}
+
+.comments-div{
+    margin: 50px;
+    border: 1px solid grey;
+    padding: 20px;
+    border-radius: 15px;
+    background-color:#4b2c50;
+    color: white;
+}
+
+.bs-example{
+    margin-left: 50px;
+    margin-right: 50px;
 }

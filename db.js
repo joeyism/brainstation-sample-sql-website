@@ -6,6 +6,7 @@ var users = [
     { "last_name": "Sham", "first_name": "Joey" },
     { "last_name": "Syed", "first_name": "Nabeel" } 
 ];
+var comments = [{ id: 0, userid: 0, comment: "First Comment!" }];
 
 db.serialize(function(){
 
@@ -17,6 +18,13 @@ db.serialize(function(){
     });
     stmt.finalize();
 
+    db.run("CREATE TABLE comments(id int, userid int, comment varchar(200))");
+
+    stmt = db.prepare("INSERT INTO comments VALUES (?, ?, ?)");
+    comments.forEach(function(comment, i){
+        stmt.run(i, comment.userid, comment.comment); 
+    });
+    stmt.finalize();
 
 });
 
@@ -44,6 +52,30 @@ module.exports = {
 
         db.run(query);
         cb();
+    },
+
+    addComment: function(opt, cb){
+        comments.push(opt.comment);
+        var query = "INSERT INTO comments VALUES (" + comments.length +
+            ", " + opt.currentuser.id +
+            ", '"+ opt.comment + "')";
+        console.log(query);
+        db.run(query);
+        cb();
+    },
+    
+    getComments: function(cb){
+        var result = [];
+        db.each("select * from comments join users where users.id = comments.userid", function(err, row){
+            if (err){
+                console.log(err);
+                cb(err);
+                return
+            }
+            result.push(row);
+        }, function(){
+            cb(null, result);  
+        });
     }
 
 
